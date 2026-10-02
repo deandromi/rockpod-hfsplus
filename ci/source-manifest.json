@@ -29,7 +29,7 @@
   },
   "firmware/export/config/ipod6g.h": {
     "original": "e4bec7bd752c01db4f03b6bbe69541683014dffb3e2211b2012ddb071d08382e",
-    "updated": "96a085995e00a15e52bf31137674b058d9eceecd0016e317bb452cf63457592a"
+    "updated": "e82f49c2ff054888623d1675e7dad54d59522ce973be0eccb74f7ee121979599"
   },
   "firmware/export/fat.h": {
     "original": "06110f6fa442a315154b93a64c7711c88d2f10f59d0a9ad181a72497790aa045",
@@ -102,5 +102,9 @@
   "tools/hfsplus/tests/test_partitions.py": {
     "original": null,
     "updated": "402711d1c5a2e58aebd4f59284c089601bab9529591fdd896dc5ea8c66161822"
+  },
+  "firmware/drivers/usb-designware.c": {
+    "original": "bdd0eea6a6e121c7c7565e47d2f1f5d835403df440272dc097e7a35d2972dd1f",
+    "updated": "562739fd8184a70ed38f6232b6f3346e10d41fe8a35d991d58890232a711fc9c"
   }
 }
