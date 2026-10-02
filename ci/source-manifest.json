@@ -1,0 +1,106 @@
+{
+  "bootloader/ipod-s5l87xx.c": {
+    "original": "975c887e21102c74693b0dee7e0e90df7290d12d2bd47ea047471dd7545166aa",
+    "updated": "8d994cd88892771120c2fe9f9e572c941cc6801b73bc4d47213a27f7db2b37df"
+  },
+  "firmware/SOURCES": {
+    "original": "48c15a025f0940917b3b2215bf82b205d2c7ddd59fa6c3b01e1007969d11b980",
+    "updated": "b810835912260528d083d9785f2c0f0a9eda645abf3a74c62f7cdfc242647ac7"
+  },
+  "firmware/common/disk.c": {
+    "original": "a03e478c158742331de59d8df4f55434b7bb2fcf8fa3c5adffd653133fe38b35",
+    "updated": "d1a385f403fafc38324501ebb59e9c3ecb0843e32cf73027f50f5490efa5f1a3"
+  },
+  "firmware/common/fat.c": {
+    "original": "43f770ae3ebbeadfb7ec9caad75d50aa37cd6c1c07d6b6f65f425ca342a4a612",
+    "updated": "f528f40f4eae274f14bf557be661972f55481f4f4b12814d2f3b64f732e7f429"
+  },
+  "firmware/common/file.c": {
+    "original": "6024f532ab550d3dd525f3c01f8e0de2a71379b9887ab57f5740076bb0e4530d",
+    "updated": "caabec89413a86d5e7e28d039283d619cb6edc8d35e128146ea259d0d06e0f73"
+  },
+  "firmware/common/file_internal.c": {
+    "original": "fd70cb893ec8f6e00daa9a36fe375acb675741bc8488e9543a739f66a778f844",
+    "updated": "33eaaa9e703c01ee71f84497bca401ba30f77b613226f068f089484680eaee79"
+  },
+  "firmware/export/config.h": {
+    "original": "f215c45b45cbacf14504cca6d13b9c9835288bc5175226880c3341e910f39e85",
+    "updated": "4cccc24a5a586afd889423daf09ce9a98acfc04a84717e9cd4173211131eeeae"
+  },
+  "firmware/export/config/ipod6g.h": {
+    "original": "e4bec7bd752c01db4f03b6bbe69541683014dffb3e2211b2012ddb071d08382e",
+    "updated": "96a085995e00a15e52bf31137674b058d9eceecd0016e317bb452cf63457592a"
+  },
+  "firmware/export/fat.h": {
+    "original": "06110f6fa442a315154b93a64c7711c88d2f10f59d0a9ad181a72497790aa045",
+    "updated": "ef934a53eca55531285a8df9a57b010724605887f998c31bb641dc730a46b307"
+  },
+  "docs/HFSPLUS-DEVELOPMENT.md": {
+    "original": null,
+    "updated": "02d2dda0bc0403c01c015f91a26088df905ecdafccbe2f29da94ccd6ff5d1e1a"
+  },
+  "firmware/export/hfsplus_rb.h": {
+    "original": null,
+    "updated": "2606ee3544f9663c711004d0a1fd667cf2b27138215199f0d883926b4dfe8913"
+  },
+  "firmware/hfsplus/hfsplus_partition.c": {
+    "original": null,
+    "updated": "83d61c445ae9b7fce2beb2e54766aeda823a97dd7e52cb8672c18060d2a8a3a1"
+  },
+  "firmware/hfsplus/hfsplus_partition.h": {
+    "original": null,
+    "updated": "9a63c35a0a985f33e9d057b85fdc0abbcfd6a7eec9c9305074fe0ae5e4f625ee"
+  },
+  "firmware/hfsplus/hfsplus_rb.c": {
+    "original": null,
+    "updated": "0d0fc09dd751cac04299b9a18dbda5298c9d0d4589feacfb6d69795cb6a69d06"
+  },
+  "firmware/hfsplus/hfsplus_ro.c": {
+    "original": null,
+    "updated": "63d87725382a204157c22d3a2a35444c91a39784c5157ba17b2f88cf87ea672c"
+  },
+  "firmware/hfsplus/hfsplus_ro.h": {
+    "original": null,
+    "updated": "9918de7f5b2f653ac239c2b0b7012d3ec2900ec0aa1b1b049ae0ebabb722b11a"
+  },
+  "tools/hfsplus/Makefile": {
+    "original": null,
+    "updated": "b85b8f4a7c17116628bfd7524df886b6eead1a99d2da665b899e31625e4c5a8e"
+  },
+  "tools/hfsplus/build-ipod6g.sh": {
+    "original": null,
+    "updated": "acd370d9f1be786fcec3bed540f775f7485b5606fe2ad43b261e5a3561b79171"
+  },
+  "tools/hfsplus/inspect.c": {
+    "original": null,
+    "updated": "3fdd9a08f1a4f03dd1e89f06faff03c0c820ff8ded300b91f241a8ac7287a073"
+  },
+  "tools/hfsplus/tests/api_test.c": {
+    "original": null,
+    "updated": "66e9fe17dbed29ddb9f1f0d42b912921abb5f7d41350ec13fdc1ff66d314a995"
+  },
+  "tools/hfsplus/tests/check_integration.py": {
+    "original": null,
+    "updated": "8045b8773af9efef815ca92685dbfdbdd3a0ad03b4c0de3a585bd193a9ece67b"
+  },
+  "tools/hfsplus/tests/host-autoconf.h": {
+    "original": null,
+    "updated": "1664ed15ae1dddd52fa8605ff5a09c105ce1141e3698c235771591d4873dd602"
+  },
+  "tools/hfsplus/tests/rb_adapter.c": {
+    "original": null,
+    "updated": "ee41eef69668a94f6b7e116809b79163a85512cbe83f45f467bf1cd275d56ac1"
+  },
+  "tools/hfsplus/tests/rb_runner.c": {
+    "original": null,
+    "updated": "279fdf6bf8ed0d90f7d46bc8d9319ea5020916729648e6626cbc11cc64aa5f6a"
+  },
+  "tools/hfsplus/tests/test_images.py": {
+    "original": null,
+    "updated": "96be1701e9c1dece74840836471b4e5ccd2c8c6580be5bf8e32df80d7471d9c3"
+  },
+  "tools/hfsplus/tests/test_partitions.py": {
+    "original": null,
+    "updated": "402711d1c5a2e58aebd4f59284c089601bab9529591fdd896dc5ea8c66161822"
+  }
+}

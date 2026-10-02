@@ -1,0 +1,86 @@
+name: Build Rockpod HFS+ ipod6g
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rockpod-hfsplus-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout HFS+ changes
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout exact uploaded Rockpod version
+        uses: actions/checkout@v4
+        with:
+          repository: nuxcodes/rockpod
+          ref: 951d17c0575fbb61f3c585b5f0c3a0a941dcb10f
+          path: source
+          persist-credentials: false
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential autoconf automake libtool libtool-bin flex bison texinfo gawk patch curl unzip zip xz-utils bzip2 python3 libgmp-dev libmpfr-dev libmpc-dev zlib1g-dev
+      - name: Apply verified HFS+ changes
+        run: python3 ci/assemble.py source
+      - name: Host tests and sanitizers
+        run: |
+          ASAN_OPTIONS=detect_leaks=0 make -C source/tools/hfsplus sanitize
+          python3 source/tools/hfsplus/tests/check_integration.py --sanitize
+      - name: Restore Rockbox ARM toolchain
+        id: compiler-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/rockbox-toolchain
+          key: rb-arm-elf-eabi-gcc950-ubuntu2204-${{ hashFiles('source/tools/rockboxdev.sh', 'source/tools/toolchain-patches/**') }}
+      - name: Build Rockbox ARM toolchain
+        if: steps.compiler-cache.outputs.cache-hit != 'true'
+        env:
+          RBDEV_PREFIX: ${{ runner.temp }}/rockbox-toolchain
+          RBDEV_BUILD: ${{ runner.temp }}/rockbox-toolchain-build
+          RBDEV_DOWNLOAD: ${{ runner.temp }}/rockbox-downloads
+        run: |
+          mkdir -p logs
+          bash source/tools/rockboxdev.sh --target=a --makeflags=-j2 2>&1 | tee logs/toolchain.log
+      - name: Compile firmware and bootloader
+        run: |
+          export PATH="$RUNNER_TEMP/rockbox-toolchain/bin:$PATH"
+          mkdir -p logs
+          arm-elf-eabi-gcc --version | tee logs/compiler-version.txt
+          JOBS=2 sh source/tools/hfsplus/build-ipod6g.sh 2>&1 | tee logs/firmware-build.log
+      - name: Collect experimental binaries and exact source
+        run: |
+          mkdir -p artifacts
+          cp source/build-hfsplus-ipod6g.*/output/rockbox.zip artifacts/
+          cp source/build-hfsplus-ipod6g.*/output/bootloader-ipod6g.ipod artifacts/
+          cp source/docs/HFSPLUS-DEVELOPMENT.md artifacts/
+          git -C source diff > artifacts/tracked-source.diff
+          tar --exclude=.git --exclude='build-*' --exclude=__pycache__ --exclude=hfsplus-inspect --exclude=api-test -czf artifacts/rockpod-hfsplus-source.tar.gz -C source .
+          printf '%s\n' 'EXPERIMENTAL: successful compilation is not proof of iPod boot or playback.' 'HFS+ is read-only; settings, playlists and PictureFlow may fail.' 'Nothing has been installed or flashed by this workflow.' > artifacts/READ-ME-FIRST.txt
+          printf 'HFS+ commit: %s\nRockpod base: %s\n' "$GITHUB_SHA" '951d17c0575fbb61f3c585b5f0c3a0a941dcb10f' > artifacts/BUILD-REVISION.txt
+          cd artifacts
+          sha256sum rockbox.zip bootloader-ipod6g.ipod rockpod-hfsplus-source.tar.gz > SHA256SUMS
+      - name: Upload experimental firmware and bootloader
+        uses: actions/upload-artifact@v4
+        with:
+          name: rockpod-hfsplus-ipod6g-${{ github.run_number }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rockpod-build-logs-${{ github.run_number }}
+          path: |
+            logs/
+            ${{ runner.temp }}/rockbox-toolchain-build/*.log
+          if-no-files-found: warn
+          retention-days: 14
