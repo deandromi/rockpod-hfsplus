@@ -8,6 +8,11 @@ permissions:
 concurrency:
   group: rockpod-hfsplus-${{ github.ref }}
   cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
+env:
+  SOURCE_DIR: /tmp/rb-${{ github.run_id }}
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -36,7 +41,7 @@ jobs:
           python3 source/tools/hfsplus/tests/check_integration.py --sanitize
       - name: Restore Rockbox ARM toolchain
         id: compiler-cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/rockbox-toolchain
           key: rb-arm-elf-eabi-gcc950-ubuntu2204-${{ hashFiles('source/tools/rockboxdev.sh', 'source/tools/toolchain-patches/**') }}
@@ -49,20 +54,28 @@ jobs:
         run: |
           mkdir -p logs
           bash source/tools/rockboxdev.sh --target=a --makeflags=-j2 2>&1 | tee logs/toolchain.log
+      - name: Save completed ARM toolchain
+        if: steps.compiler-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/rockbox-toolchain
+          key: ${{ steps.compiler-cache.outputs.cache-primary-key }}
       - name: Compile firmware and bootloader
         run: |
           export PATH="$RUNNER_TEMP/rockbox-toolchain/bin:$PATH"
           mkdir -p logs
           arm-elf-eabi-gcc --version | tee logs/compiler-version.txt
-          JOBS=2 sh source/tools/hfsplus/build-ipod6g.sh 2>&1 | tee logs/firmware-build.log
+          test ! -e "$SOURCE_DIR"
+          mv source "$SOURCE_DIR"
+          JOBS=2 sh "$SOURCE_DIR/tools/hfsplus/build-ipod6g.sh" 2>&1 | tee logs/firmware-build.log
       - name: Collect experimental binaries and exact source
         run: |
           mkdir -p artifacts
-          cp source/build-hfsplus-ipod6g.*/output/rockbox.zip artifacts/
-          cp source/build-hfsplus-ipod6g.*/output/bootloader-ipod6g.ipod artifacts/
-          cp source/docs/HFSPLUS-DEVELOPMENT.md artifacts/
-          git -C source diff > artifacts/tracked-source.diff
-          tar --exclude=.git --exclude='build-*' --exclude=__pycache__ --exclude=hfsplus-inspect --exclude=api-test -czf artifacts/rockpod-hfsplus-source.tar.gz -C source .
+          cp "$SOURCE_DIR"/build-hfsplus-ipod6g.*/output/rockbox.zip artifacts/
+          cp "$SOURCE_DIR"/build-hfsplus-ipod6g.*/output/bootloader-ipod6g.ipod artifacts/
+          cp "$SOURCE_DIR"/docs/HFSPLUS-DEVELOPMENT.md artifacts/
+          git -C "$SOURCE_DIR" diff > artifacts/tracked-source.diff
+          tar --exclude=.git --exclude='build-*' --exclude=__pycache__ --exclude=hfsplus-inspect --exclude=api-test -czf artifacts/rockpod-hfsplus-source.tar.gz -C "$SOURCE_DIR" .
           printf '%s\n' 'EXPERIMENTAL: successful compilation is not proof of iPod boot or playback.' 'HFS+ is read-only; settings, playlists and PictureFlow may fail.' 'Nothing has been installed or flashed by this workflow.' > artifacts/READ-ME-FIRST.txt
           printf 'HFS+ commit: %s\nRockpod base: %s\n' "$GITHUB_SHA" '951d17c0575fbb61f3c585b5f0c3a0a941dcb10f' > artifacts/BUILD-REVISION.txt
           cd artifacts
